@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flight-prices"
+version = "1.0.0"
+description = "Prédiction du prix des billets d'avion intérieurs en Inde (mars à juin 2019)"
+requires-python = ">=3.10"
+authors = [{ name = "Youssef Mir" }]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.2",
+    "matplotlib>=3.7",
+    "openpyxl>=3.1",
+    "shapely>=2.0",
+    "joblib>=1.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "NPY", "PD"]
+src = ["src", "tests", "scripts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+# Avertissements internes à matplotlib 3.7 avec les versions récentes de pyparsing.
+filterwarnings = ["ignore::DeprecationWarning:matplotlib.*"]

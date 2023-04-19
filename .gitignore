@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+
+# Outils
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+
+# Téléchargements et résultats intermédiaires (régénérables)
+data/cache/
