@@ -1,0 +1,1027 @@
+/* ==========================================================================
+   Prix des billets d'avion : styles de la page
+   Direction : panneau des départs × carte d'embarquement. Le tableau et le
+   bandeau des modèles sont anthracite et jaune signalétique (Schiphol) ; le
+   reste est un horaire imprimé : papier, encre et un seul signal, le jaune,
+   réservé à ce que prédit le modèle.
+   Mise en page : grille éditoriale (texte ≈ 62 caractères, graphiques larges),
+   une séquence de défilement, un bandeau sombre pleine largeur.
+   Typographie : Barlow Condensed (titres, signalétique), Hind (texte, latin et
+   devanagari), B612 et B612 Mono (police des cockpits Airbus : étiquettes,
+   codes IATA, horaires, prix).
+   ========================================================================== */
+
+:root {
+  --bg: #f4f4f1;
+  --surface: #fbfbf9;
+  --ink: #1c1d21;
+  --ink-2: #45474e;
+  --muted: #6b6d74;
+  --line: #d9d9d2;
+  --axis: #b3b4ad;
+  --accent: #1c1d21;
+  --accent-ink: #f4f4f1;
+  --signal: #ffd200;
+  --signal-ink: #1c1d21;
+  --mark: #1c1d21;
+  --mark-2: #9c9e97;
+  --mark-soft: rgb(28 29 33 / 0.08);
+  --land: #e5e5df;
+  --land-line: #c4c4bd;
+
+  /* Objets signalétiques : identiques dans les deux thèmes */
+  --board: #1f2023;
+  --board-cell: #2d2e32;
+  --board-seam: #121315;
+  --board-ink: #f1efe8;
+  --board-yellow: #ffd200;
+  --board-dim: #94969c;
+  --board-line: #3a3c41;
+
+  --font-body: "Hind", "Segoe UI", sans-serif;
+  --font-mono: "B612 Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-label: "B612", "Segoe UI", sans-serif;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --step-0: 1.0625rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141517;
+    --surface: #1b1c1f;
+    --ink: #edece6;
+    --ink-2: #b9b8b1;
+    --muted: #8b8c87;
+    --line: #2c2e32;
+    --axis: #3d3f45;
+    --accent: #ffd200;
+    --accent-ink: #1c1d21;
+    --mark: #edece6;
+    --mark-2: #6e7076;
+    --mark-soft: rgb(237 236 230 / 0.1);
+    --land: #202125;
+    --land-line: #383a3f;
+    --board: #0c0d0e;
+    --board-cell: #1e1f22;
+    --board-seam: #060607;
+    --board-line: #2c2e33;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #141517;
+  --surface: #1b1c1f;
+  --ink: #edece6;
+  --ink-2: #b9b8b1;
+  --muted: #8b8c87;
+  --line: #2c2e32;
+  --axis: #3d3f45;
+  --accent: #ffd200;
+  --accent-ink: #1c1d21;
+  --mark: #edece6;
+  --mark-2: #6e7076;
+  --mark-soft: rgb(237 236 230 / 0.1);
+  --land: #202125;
+  --land-line: #383a3f;
+  --board: #0c0d0e;
+  --board-cell: #1e1f22;
+  --board-seam: #060607;
+  --board-line: #2c2e33;
+  color-scheme: dark;
+}
+
+/* ---------- Typographie et grille éditoriale ---------- */
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.headline {
+  font-size: clamp(2.5rem, 1.35rem + 3.7vw, 4.5rem);
+  line-height: 0.98;
+}
+
+.title {
+  font-size: clamp(2rem, 1.35rem + 2.1vw, 3.1rem);
+  line-height: 1;
+  max-width: 22ch;
+}
+
+.standfirst {
+  font-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--ink-2);
+  max-width: 40ch;
+}
+
+.byline {
+  font: 400 0.875rem/1.4 var(--font-label);
+  color: var(--muted);
+}
+
+.byline b {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.text {
+  display: grid;
+  gap: 1em;
+  max-width: 62ch;
+  color: var(--ink-2);
+}
+
+.text strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-size: 0.94em;
+  color: var(--ink);
+}
+
+.mark-signal {
+  padding: 0 0.18em;
+  background: var(--signal);
+  color: var(--signal-ink);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.source {
+  font: 400 0.75rem/1.45 var(--font-label);
+  color: var(--muted);
+}
+
+.chapter {
+  padding-block: clamp(56px, 4rem + 3vw, 120px);
+}
+
+.chapter__intro {
+  display: grid;
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+@media (min-width: 1000px) {
+  .chapter__intro {
+    margin-left: 8.333%;
+  }
+}
+
+.textlink {
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+/* ---------- Barre de navigation ---------- */
+
+.brand {
+  font: 600 1.25rem/1 var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+.brand__sub {
+  font: 400 0.875rem/1 var(--font-body);
+}
+
+.sitenav a {
+  font: 500 0.9375rem/1 var(--font-body);
+}
+
+.codelink {
+  font-family: var(--font-label);
+  font-size: 0.8125rem;
+}
+
+/* ---------- En-tête ---------- */
+
+.lead {
+  padding-block: clamp(36px, 2rem + 2vw, 72px) clamp(48px, 3rem + 2vw, 96px);
+}
+
+.lead__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-5) clamp(32px, 2rem + 2vw, 64px);
+  align-items: end;
+}
+
+.lead__grid .board {
+  grid-column: 1 / -1;
+  margin-top: clamp(16px, 1rem + 1vw, 32px);
+}
+
+.lead__text {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.lead__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 1000px) {
+  .lead__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Tableau des départs ---------- */
+
+.board {
+  margin: 0;
+  min-width: 0;
+  padding: 20px 22px 16px;
+  border-radius: 6px;
+  background: var(--board);
+  color: var(--board-ink);
+}
+
+.board__head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--board-line);
+}
+
+.board__hindi {
+  font: 600 1.75rem/1 var(--font-body);
+  color: var(--board-yellow);
+}
+
+.board__latin {
+  font: 700 1.75rem/1 var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.board__clock {
+  margin-left: auto;
+  font: 400 0.75rem/1 var(--font-label);
+  color: var(--board-dim);
+}
+
+.board__scroll {
+  overflow-x: auto;
+}
+
+.board table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 5px;
+  font: 700 1rem/1 var(--font-mono);
+}
+
+.estimate .board table {
+  font-size: 0.875rem;
+}
+
+.board th {
+  padding: 12px 10px 2px 0;
+  font: 400 0.6875rem/1.2 var(--font-label);
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: var(--board-dim);
+  white-space: nowrap;
+}
+
+.board td {
+  padding: 0 12px 0 0;
+  white-space: nowrap;
+}
+
+.estimate .board td {
+  padding-right: 8px;
+}
+
+.board .is-num {
+  text-align: right;
+}
+
+.board td.gap {
+  font: 400 0.8125rem/1 var(--font-label);
+  color: var(--board-dim);
+}
+
+.flaps {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.flap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 1.02em;
+  height: 1.55em;
+  border-radius: 2px;
+  background: var(--board-cell);
+  color: var(--board-ink);
+}
+
+.flap::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1px;
+  background: var(--board-seam);
+}
+
+.flaps--yellow .flap {
+  color: var(--board-yellow);
+}
+
+.flap--blank {
+  color: transparent;
+}
+
+.board__foot {
+  margin-top: 8px;
+  font: 400 0.75rem/1.45 var(--font-label);
+  color: var(--board-dim);
+}
+
+@media (max-width: 640px) {
+  .board {
+    padding: 16px 12px 12px;
+  }
+
+  .board table,
+  .estimate .board table {
+    font-size: 0.75rem;
+  }
+
+  .board td,
+  .estimate .board td {
+    padding-right: 6px;
+  }
+
+  .board__hindi,
+  .board__latin {
+    font-size: 1.4rem;
+  }
+
+  .board [data-col="via"],
+  .board [data-col="date"],
+  .board [data-col="gap"] {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .board table,
+  .estimate .board table {
+    font-size: 0.6875rem;
+  }
+
+  .board [data-col="code"] {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .sitenav {
+    display: none;
+  }
+}
+
+/* ---------- Graphiques : marques communes ---------- */
+
+.chart {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.axis text,
+.chart-label {
+  fill: var(--muted);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 400;
+}
+
+.chart-label--ink {
+  fill: var(--ink-2);
+}
+
+.chart-label--strong {
+  fill: var(--ink);
+  font-weight: 700;
+}
+
+.chart-label--halo {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.chart-num {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.grid line {
+  stroke: var(--line);
+}
+
+.baseline {
+  stroke: var(--axis);
+}
+
+.m-mark {
+  fill: var(--mark);
+}
+
+.m-mark-2 {
+  fill: var(--mark-2);
+}
+
+.m-soft {
+  fill: var(--mark-soft);
+}
+
+.m-signal {
+  fill: var(--signal);
+}
+
+.m-line {
+  fill: none;
+  stroke: var(--mark);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.m-ring {
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+.signal-tag rect {
+  fill: var(--signal);
+}
+
+.signal-tag text {
+  fill: var(--signal-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.crosshair {
+  stroke: var(--axis);
+  stroke-width: 1;
+}
+
+/* ---------- Carte ---------- */
+
+.network {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 1.5rem + 2vw, 64px);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .network {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.network__side {
+  display: grid;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.map {
+  max-width: 640px;
+  justify-self: center;
+  width: 100%;
+}
+
+.map .land {
+  fill: var(--land);
+  stroke: var(--land-line);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.map .leg {
+  fill: none;
+  stroke: var(--mark);
+  stroke-linecap: round;
+  opacity: 0.22;
+}
+
+.map .od {
+  fill: none;
+  stroke: var(--mark);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.map .od.is-on {
+  stroke-width: 3.5;
+}
+
+.map .od.is-dim {
+  opacity: 0.2;
+}
+
+.map .od-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 22;
+  cursor: pointer;
+}
+
+.map .hub {
+  fill: var(--bg);
+  stroke: var(--mark);
+  stroke-width: 1.3;
+}
+
+.map .city {
+  fill: var(--mark);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+.map .code {
+  fill: var(--ink);
+  font: 700 14px/1 var(--font-mono);
+  paint-order: stroke;
+  stroke: var(--land);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.map .code--hub {
+  fill: var(--ink-2);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.map .plane {
+  fill: var(--ink);
+}
+
+.map .arrow {
+  fill: var(--mark);
+}
+
+/* Horaire des liaisons (tableau cliquable) */
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.timetable caption {
+  margin-bottom: 8px;
+  font: 400 0.75rem/1.4 var(--font-label);
+  text-align: left;
+  color: var(--muted);
+}
+
+.timetable th {
+  padding: 6px 8px 6px 0;
+  border-bottom: 1px solid var(--ink);
+  font: 400 0.75rem/1.2 var(--font-label);
+  text-align: left;
+  color: var(--muted);
+}
+
+.timetable td {
+  padding: 9px 8px 9px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: baseline;
+}
+
+.timetable .is-num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.timetable tr[data-pair] {
+  cursor: pointer;
+}
+
+.timetable tr[data-pair]:hover td {
+  background: var(--mark-soft);
+}
+
+.timetable tr[aria-selected="true"] td {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+.timetable .codes {
+  font: 700 0.9375rem/1 var(--font-mono);
+  white-space: nowrap;
+}
+
+.timetable .names {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.timetable tr[aria-selected="true"] .names {
+  color: var(--signal-ink);
+}
+
+/* ---------- Séquence de défilement ---------- */
+
+.scrolly {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(28px, 1.5rem + 2vw, 64px);
+}
+
+.scrolly__steps {
+  display: grid;
+  min-width: 0;
+}
+
+.step {
+  display: grid;
+  align-content: center;
+  gap: 0.6em;
+  min-height: 78vh;
+  max-width: 44ch;
+  color: var(--ink-2);
+  opacity: 0.38;
+  transition: opacity 300ms ease;
+}
+
+.step:first-child {
+  min-height: 52vh;
+  align-content: start;
+}
+
+.step.is-active {
+  opacity: 1;
+}
+
+.step h3 {
+  font-size: 1.6rem;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.scrolly__graphic {
+  position: sticky;
+  top: calc(var(--topbar-h) + 16px);
+  align-self: start;
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: calc(100vh - var(--topbar-h) - 40px);
+  max-height: 760px;
+}
+
+.strip {
+  position: relative;
+  min-height: 0;
+}
+
+.strip canvas,
+.strip svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .scrolly {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .scrolly__graphic {
+    order: -1;
+    height: 58vh;
+    z-index: 1;
+    background: var(--bg);
+    padding-bottom: var(--space-2);
+  }
+
+  .scrolly__steps {
+    position: relative;
+    z-index: 2;
+  }
+
+  .step {
+    min-height: 70vh;
+    align-content: end;
+    max-width: none;
+    opacity: 1;
+  }
+
+  .step > * {
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .step > * + * {
+    margin-top: -0.6em;
+    border-top: 0;
+  }
+}
+
+/* ---------- Bandeau sombre : les modèles ---------- */
+
+.band {
+  background: var(--board);
+  color: var(--board-ink);
+  --ink: var(--board-ink);
+  --ink-2: #c9c8c1;
+  --muted: var(--board-dim);
+  --line: var(--board-line);
+  --axis: #55575d;
+  --mark: #f1efe8;
+  --mark-2: #6c6e74;
+  --mark-soft: rgb(241 239 232 / 0.08);
+  --bg: var(--board);
+  --surface: var(--board-cell);
+  --accent: var(--board-yellow);
+  --signal-ink: #1c1d21;
+}
+
+.band .text {
+  color: var(--ink-2);
+}
+
+.band__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: clamp(32px, 2rem + 2vw, 72px);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .band__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.band .seg {
+  background: transparent;
+  border-color: var(--board-line);
+}
+
+.band .seg button {
+  font-family: var(--font-label);
+  color: var(--board-dim);
+}
+
+.band .seg button[aria-pressed="true"] {
+  background: var(--board-yellow);
+  color: #1c1d21;
+}
+
+.cloud {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: 100%;
+}
+
+.cloud canvas,
+.cloud svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.details {
+  margin-top: var(--space-7);
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-4);
+}
+
+.details > summary {
+  cursor: pointer;
+  font: 600 1rem/1.4 var(--font-body);
+  color: var(--ink);
+}
+
+.details__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-7);
+  margin-top: var(--space-5);
+}
+
+@media (max-width: 960px) {
+  .details__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Simulateur : carte d'embarquement ---------- */
+
+.sim {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 1.5rem + 2vw, 64px);
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .sim {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.pass {
+  display: grid;
+  gap: var(--space-4);
+  padding: 22px 22px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.pass__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1.5px dashed var(--axis);
+  font: 400 0.75rem/1 var(--font-label);
+  color: var(--muted);
+}
+
+.pass__codes {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font: 700 2.4rem/1 var(--font-mono);
+  color: var(--ink);
+}
+
+.pass__codes span {
+  font: 400 1rem/1 var(--font-label);
+  color: var(--muted);
+}
+
+.pass__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.pass label,
+.pass .field__label {
+  font: 400 0.75rem/1.2 var(--font-label);
+  color: var(--muted);
+}
+
+.pass select,
+.pass input[type="date"],
+.pass input[type="time"] {
+  width: 100%;
+  font: 700 0.9375rem/1.2 var(--font-mono);
+  border-radius: 4px;
+}
+
+.pass .seg {
+  border-radius: 4px;
+}
+
+.pass .seg button {
+  font-family: var(--font-body);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chips button {
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 0.8125rem/1 var(--font-mono);
+  cursor: pointer;
+}
+
+#sim-info button,
+#sim-cabin button {
+  padding: 6px 10px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+.chips button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+.range-out {
+  font: 700 0.875rem/1 var(--font-mono);
+  color: var(--ink);
+}
+
+@media (max-width: 520px) {
+  .pass__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.estimate {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.estimate .board {
+  padding-bottom: 18px;
+}
+
+.estimate__band {
+  margin-top: 12px;
+  font: 400 0.875rem/1.5 var(--font-body);
+  color: var(--board-ink);
+}
+
+.estimate__band b {
+  font-family: var(--font-mono);
+  color: var(--board-yellow);
+}
+
+/* ---------- Limites ---------- */
+
+.closing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-6) clamp(32px, 2rem + 2vw, 72px);
+}
+
+@media (max-width: 900px) {
+  .closing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.closing h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.4em;
+}
+
+.closing ul {
+  display: grid;
+  gap: 0.7em;
+  margin: 0;
+  padding-left: 1.1em;
+  color: var(--ink-2);
+}
+
+.closing li strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- Pied de page ---------- */
+
+.footer h2 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+}

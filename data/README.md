@@ -3,6 +3,10 @@
 | Fichier | Contenu | Lignes et période | Source | Licence |
 |---|---|---|---|---|
 | `raw/Data_Train.xlsx` | Vols intérieurs indiens proposés à la vente, avec leur prix | 10 683 vols ; voyages du 1er mars au 27 juin 2019 | Concours MachineHack « Predict The Flight Ticket Price Hackathon » (2019). Copie publique : [Flight Fare Prediction MH (Kaggle)](https://www.kaggle.com/datasets/nikhilmittal/flight-fare-prediction-mh) | Non précisée (données de concours), conservées ici à des fins pédagogiques |
+| `raw/india_outline_simplified.geojson` | Contour de l'Inde (frontières officielles), simplifié pour la carte du site | 1 multipolygone, ≈ 19 Ko | [India composite](https://github.com/datameet/maps/blob/master/Country/india-composite.geojson) de la communauté DataMeet, simplifié par `scripts/simplify_outline.py` (Douglas-Peucker 0,04°, îles de moins de 0,05 deg² omises) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), « India boundaries » par DataMeet |
+
+Le fichier d'origine de DataMeet (≈ 10 Mo) n'est pas versionné : `scripts/simplify_outline.py` le
+télécharge dans `data/cache/` puis régénère la version simplifiée.
 
 Conversion en euros : 1 € = 78,8361 ₹, taux de référence moyen de la BCE en 2019
 ([série EXR.A.INR.EUR.SP00.A](https://data.ecb.europa.eu/data/datasets/EXR/EXR.A.INR.EUR.SP00.A)).
