@@ -10,20 +10,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.axes import Axes
+from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.figure import Figure
 from matplotlib.ticker import FixedLocator, FuncFormatter, MaxNLocator, NullFormatter
 
 from .config import FIGURES_DIR
 from .labels import fr_pct
 
-INK = "#141834"
-INK_2 = "#444a6b"
-MUTED = "#6b7090"
-GRID = "#e3e5ee"
-AXIS = "#c3c7d6"
-SURFACE = "#fbfbfd"
-DATA = "#3552c8"  # série principale (bleu « piste »)
-HIGHLIGHT = "#c8620a"  # mise en avant (safran) — paire validée daltonisme, contraste ≥ 3:1
+INK = "#1c1d21"  # encre (marques principales et texte)
+INK_2 = "#45474e"
+MUTED = "#6b6d74"
+GRID = "#e2e2dc"
+AXIS = "#b3b4ad"
+SURFACE = "#f4f4f1"  # papier
+DATA = INK
+OTHER = "#9c9e97"  # marques secondaires
+HIGHLIGHT = "#ffd200"  # jaune signalétique du site, bordé d'encre sur le papier
+SIGNAL_LINE = "#8a6a00"  # traits fins de mise en avant (contraste 4,6:1 sur le papier)
+INK_RAMP = LinearSegmentedColormap.from_list("encre", ["#e7e7e1", INK])
 
 
 def use_style() -> None:
@@ -83,8 +87,8 @@ def price_boxes(
         prices = groups.get_group(key)
         p10, q1, med, q3, p90 = prices.quantile([0.1, 0.25, 0.5, 0.75, 0.9])
         ax.plot([p10, p90], [i, i], color=AXIS, lw=1.5, solid_capstyle="round", zorder=1)
-        ax.barh(i, q3 - q1, left=q1, height=0.5, color=DATA, alpha=0.22, zorder=2)
-        ax.plot([med, med], [i - 0.25, i + 0.25], color=DATA, lw=2.5, zorder=3)
+        ax.barh(i, q3 - q1, left=q1, height=0.5, color=DATA, alpha=0.13, zorder=2)
+        ax.plot([med, med], [i - 0.25, i + 0.25], color=INK, lw=2.5, zorder=3)
         ax.text(
             p90,
             i,
@@ -114,7 +118,7 @@ def median_price_by_date(frame: pd.DataFrame, ax: Axes, title: str = "") -> Axes
         stats["q1"],
         stats["q3"],
         color=DATA,
-        alpha=0.15,
+        alpha=0.12,
         lw=0,
         label="50 % des vols (quartiles)",
     )
@@ -128,13 +132,16 @@ def median_price_by_date(frame: pd.DataFrame, ax: Axes, title: str = "") -> Axes
 def model_bars(table: pd.DataFrame, ax: Axes, metric: str = "MAE", highlight: str = "") -> Axes:
     """Barres horizontales d'une métrique de validation croisée (± écart-type)."""
     ordered = table.sort_values(metric, ascending=metric != "R2")
-    colors = [HIGHLIGHT if name == highlight else DATA for name in ordered.index]
+    colors = [HIGHLIGHT if name == highlight else OTHER for name in ordered.index]
+    edges = [INK if name == highlight else OTHER for name in ordered.index]
     err = ordered.get(f"{metric} (é.-t.)")
     ax.barh(
         ordered.index,
         ordered[metric],
         xerr=err,
         color=colors,
+        edgecolor=edges,
+        linewidth=0.8,
         height=0.5,
         error_kw={"ecolor": INK_2, "elinewidth": 1, "capsize": 3},
     )
@@ -161,7 +168,7 @@ def predicted_vs_actual(
         xscale="log",
         yscale="log",
         mincnt=1,
-        cmap="Blues",
+        cmap=INK_RAMP,
         linewidths=0.2,
         edgecolors=SURFACE,
     )
@@ -169,12 +176,12 @@ def predicted_vs_actual(
     ax.plot(lims, lims, color=INK, lw=1, label="prédiction parfaite")
     if interval:
         low, high = interval
-        ax.plot(lims, lims * low, color=HIGHLIGHT, lw=1, ls=(0, (4, 3)))
+        ax.plot(lims, lims * low, color=SIGNAL_LINE, lw=1.2, ls=(0, (4, 3)))
         ax.plot(
             lims,
             lims * high,
-            color=HIGHLIGHT,
-            lw=1,
+            color=SIGNAL_LINE,
+            lw=1.2,
             ls=(0, (4, 3)),
             label=f"intervalle à 80 % ({fr_pct(low - 1, 0, True)} / {fr_pct(high - 1, 0, True)})",
         )
