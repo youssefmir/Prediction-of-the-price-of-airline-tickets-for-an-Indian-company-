@@ -11,7 +11,7 @@ Un modèle de gradient boosting prédit le prix d'un vol intérieur indien en se
 - **615 ₹ d'erreur moyenne** (6,9 % du prix) et un R² de 0,94 sur 2 091 vols de test, mis de côté pendant toute la mise au point.
 - **Une escale double le prix** : 4 667 ₹ en médiane pour un vol direct, 10 262 ₹ avec une escale.
 - **La compagnie compte autant que l'itinéraire** : de 3 873 ₹ chez SpiceJet à 11 134 ₹ chez Jet Airways, en médiane.
-- **Réserver tard coûte cher** : le 1er mars 2019, le prix médian atteint 17 686 ₹, près de quatre fois celui des vols de mi-avril (4 823 ₹).
+- **Les vols du tout début mars sont les plus chers** : 17 686 ₹ en médiane le 1er mars 2019, près de quatre fois les vols de mi-avril (4 823 ₹), sans doute parce que les prix ont été relevés peu avant le départ.
 - **Le modèle tourne dans le navigateur** : ses 400 arbres sont exportés en JavaScript et le simulateur du site reproduit les prédictions Python à moins de 0,001 ₹ près.
 
 Sommaire : [Démarrage rapide](#démarrage-rapide) · [Utilisation](#utilisation) · [Résultats](#résultats) · [Méthode](#méthode) · [Données](#données) · [Limites](#limites)
@@ -28,29 +28,11 @@ Prérequis : Python 3.10 ou plus récent (testé avec Python 3.11).
 
 ```bash
 git clone https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-.git
-```
-
-```bash
 cd Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-
-```
-
-```bash
 python -m venv .venv
-```
-
-```bash
 source .venv/bin/activate        # Windows : .venv\Scripts\activate
-```
-
-```bash
 pip install -r requirements.txt
-```
-
-```bash
 pip install -e .
-```
-
-```bash
 jupyter notebook notebooks/prediction_prix_billets.ipynb
 ```
 
