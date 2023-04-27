@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Prix des billets d'avion</title>
+  <meta name="description" content="Un modèle de gradient boosting prédit le prix d'un vol intérieur indien à 7 % près, à partir de la compagnie, de l'itinéraire, de la date et de l'horaire. Récit interactif et simulateur.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Un modèle prédit le prix d'un vol intérieur indien à 7 % près">
+  <meta property="og:description" content="10 454 vols, cinq modèles comparés et un simulateur qui fait tourner le modèle dans le navigateur.">
+  <meta property="og:image" content="https://youssefmir.github.io/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=B612+Mono:wght@400;700&family=Barlow+Condensed:wght@500;600;700&family=Hind:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="frame.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="brand" href="#top">Prix des billets d'avion <span class="brand__sub">Youssef Mir</span></a>
+      <nav class="sitenav" aria-label="Sections">
+        <a href="#reseau">Réseau</a>
+        <a href="#prix">Prix</a>
+        <a href="#modele">Modèle</a>
+        <a href="#simulateur">Simulateur</a>
+        <a href="#limites">Limites</a>
+      </nav>
+      <a class="codelink" href="https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-">Code ↗</a>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <!-- En-tête : titre, chapô et tableau des départs -->
+    <section class="lead" id="top">
+      <div class="wrap lead__grid">
+        <h1 class="headline">Un modèle prédit le prix d'un vol intérieur indien à 7&nbsp;% près</h1>
+        <div class="lead__text">
+          <p class="standfirst">
+            Entraîné sur <span data-k="meta.train"></span> vols proposés entre mars et juin 2019, un
+            gradient boosting estime le prix d'un billet en se trompant en moyenne de
+            <span data-k="kpi.MAE" data-unit="₹"></span>, soit <span data-k="kpi.MAE_EUR"></span>. La durée
+            du trajet, la compagnie et la date du vol font l'essentiel du prix.
+          </p>
+          <p class="byline">Par <b>Youssef Mir</b> · avril 2023 · projet IAS, licence 3</p>
+          <p class="lead__links">
+            <a class="textlink" href="#simulateur">Estimer le prix d'un billet ↓</a>
+            <a class="textlink" href="https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/blob/main/notebooks/prediction_prix_billets.ipynb">Lire le notebook ↗</a>
+          </p>
+        </div>
+
+        <figure class="board" aria-labelledby="board-caption">
+          <div class="board__head">
+            <span class="board__hindi" lang="hi">प्रस्थान</span>
+            <span class="board__latin">Départs</span>
+            <span class="board__clock">jeu de test</span>
+          </div>
+          <div class="board__scroll">
+            <table id="board-table">
+              <caption class="sr-only">Vols du jeu de test : prix réel et prix prédit par le modèle</caption>
+              <thead>
+                <tr>
+                  <th scope="col" data-col="dep">Heure</th>
+                  <th scope="col" data-col="code">Vol</th>
+                  <th scope="col" data-col="from">De</th>
+                  <th scope="col" data-col="via">Via</th>
+                  <th scope="col" data-col="to">À</th>
+                  <th scope="col" data-col="date">Date</th>
+                  <th scope="col" data-col="price" class="is-num">Réel ₹</th>
+                  <th scope="col" data-col="pred" class="is-num">Prédit ₹</th>
+                  <th scope="col" data-col="gap" class="is-num">Écart</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <figcaption class="board__foot" id="board-caption">
+            Huit vols tirés au hasard parmi les <span data-k="meta.test"></span> du jeu de test, que le modèle
+            n'a jamais vus. En jaune, le prix qu'il prédit.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Le réseau -->
+    <section class="chapter" id="reseau">
+      <div class="wrap network">
+        <div class="network__side">
+          <h2 class="title">Cinq liaisons, et presque tout passe par Mumbai</h2>
+          <div class="text" id="network-text"></div>
+          <table class="timetable" id="timetable">
+            <caption>Choisissez une liaison pour afficher ses itinéraires sur la carte.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Liaison</th>
+                <th scope="col" class="is-num">Vols</th>
+                <th scope="col" class="is-num">Prix médian</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <figure class="chart map">
+          <div id="map"></div>
+          <figcaption class="source">
+            Source : vols intérieurs indiens, mars à juin 2019 (MachineHack). Contour : DataMeet, CC BY 4.0.
+            Graphique : Youssef Mir.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Ce qui fait le prix : séquence de défilement -->
+    <section class="chapter" id="prix">
+      <div class="wrap">
+        <div class="chapter__intro">
+          <h2 class="title">Les escales, la compagnie et la date du vol font le prix</h2>
+          <p class="standfirst">
+            Chaque point est un vol. Au fil du défilement, les mêmes <span data-k="strip.size"></span> vols se
+            regroupent selon un facteur à la fois.
+          </p>
+        </div>
+        <div class="scrolly">
+          <div class="scrolly__steps" id="steps"></div>
+          <figure class="scrolly__graphic chart">
+            <div class="strip" id="strip" role="img" aria-label="Nuage de points des prix des billets, regroupés selon le facteur décrit dans le texte"></div>
+            <figcaption class="source">
+              Source : <span data-k="strip.size"></span> vols tirés au hasard ; médianes calculées sur les
+              <span data-k="meta.flights"></span> vols. Les billets à plus de 25 000 ₹ sont posés en bordure.
+              Graphique : Youssef Mir.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Le modèle : bandeau sombre -->
+    <section class="chapter band" id="modele">
+      <div class="wrap">
+        <div class="chapter__intro">
+          <h2 class="title">Sur des vols jamais vus, le modèle se trompe de <span data-k="kpi.MAE" data-unit="₹"></span> en moyenne</h2>
+          <div class="text">
+            <p>
+              Les vols sont partagés une seule fois : <span data-k="meta.train"></span> pour
+              l'entraînement, <span data-k="meta.test"></span> pour le test. Cinq modèles sont comparés
+              par validation croisée à 5 plis sur l'entraînement. Chacun est entraîné cinq fois et évalué chaque
+              fois sur un cinquième différent des vols. Le jeu de test ne sert qu'une fois, à la fin.
+            </p>
+          </div>
+        </div>
+
+        <div class="band__grid">
+          <figure class="chart">
+            <div class="fig__head">
+              <h3 class="fig__title" id="leaderboard-title">Erreur moyenne de chaque modèle en validation croisée</h3>
+              <div class="seg" id="metric-seg" role="group" aria-label="Mesure de l'erreur"></div>
+            </div>
+            <div id="leaderboard"></div>
+            <div class="text" id="choice-text"></div>
+            <figcaption class="source">Barre fine : ± un écart-type sur les 5 plis. Graphique : Youssef Mir.</figcaption>
+          </figure>
+
+          <figure class="chart">
+            <h3 class="fig__title">Prix prédit et prix réel des <span data-k="meta.test"></span> vols du test</h3>
+            <div class="cloud" id="cloud"></div>
+            <div class="text" id="cloud-text"></div>
+            <figcaption class="source">Échelles logarithmiques. Graphique : Youssef Mir.</figcaption>
+          </figure>
+        </div>
+
+        <details class="details">
+          <summary>Détails : importance des variables et scores complets</summary>
+          <div class="details__grid">
+            <figure class="chart">
+              <h3 class="fig__title">Hausse de l'erreur moyenne quand on brouille une variable</h3>
+              <div id="importance"></div>
+              <figcaption class="source">Importance par permutation, mesurée sur le jeu de test.</figcaption>
+            </figure>
+            <div class="chart">
+              <div id="leaderboard-table"></div>
+              <div id="test-table"></div>
+              <div id="importance-table"></div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Simulateur -->
+    <section class="chapter" id="simulateur">
+      <div class="wrap">
+        <div class="chapter__intro">
+          <h2 class="title">Le simulateur fait tourner le modèle dans votre navigateur</h2>
+          <p class="standfirst">
+            Choisissez un vol réellement proposé dans les données et une date entre le 1<sup>er</sup> mars et le
+            30 juin 2019. Les <span data-k="meta.trees"></span> arbres du modèle calculent le prix sans serveur.
+          </p>
+        </div>
+
+        <div class="sim">
+          <form class="pass" id="sim-form" novalidate>
+            <div class="pass__top"><span>Carte d'embarquement · simulation</span><span>2019</span></div>
+            <div class="pass__codes" aria-hidden="true"><b id="pass-from"></b><span>vers</span><b id="pass-to"></b></div>
+            <div class="field">
+              <label for="sim-pair">Liaison</label>
+              <select id="sim-pair"></select>
+            </div>
+            <div class="field">
+              <label for="sim-airline">Compagnie</label>
+              <select id="sim-airline"></select>
+            </div>
+            <div class="field">
+              <label for="sim-route">Itinéraire</label>
+              <select id="sim-route"></select>
+            </div>
+            <div class="pass__row">
+              <div class="field">
+                <label for="sim-date">Date du vol</label>
+                <input type="date" id="sim-date" min="2019-03-01" max="2019-06-30" required>
+              </div>
+              <div class="field">
+                <label for="sim-dep">Heure de départ</label>
+                <input type="time" id="sim-dep" step="300" required>
+              </div>
+            </div>
+            <div class="field">
+              <span class="field__label" id="sim-deps-label">Horaires proposés par la compagnie</span>
+              <div class="chips" id="sim-deps" role="group" aria-labelledby="sim-deps-label"></div>
+            </div>
+            <div class="field">
+              <label for="sim-duration">Durée du trajet : <output class="range-out" id="sim-duration-out" for="sim-duration"></output></label>
+              <input type="range" id="sim-duration" min="60" max="2400" step="5">
+            </div>
+            <div class="pass__row">
+              <div class="field">
+                <span class="field__label" id="sim-info-label">Conditions du billet</span>
+                <div class="chips" id="sim-info" role="group" aria-labelledby="sim-info-label"></div>
+              </div>
+              <div class="field" id="sim-cabin-field">
+                <span class="field__label" id="sim-cabin-label">Cabine</span>
+                <div class="chips" id="sim-cabin" role="group" aria-labelledby="sim-cabin-label"></div>
+              </div>
+            </div>
+          </form>
+
+          <div class="estimate">
+            <figure class="board" aria-live="polite" aria-labelledby="estimate-caption">
+              <div class="board__head">
+                <span class="board__hindi" lang="hi">प्रस्थान</span>
+                <span class="board__latin">Estimations</span>
+                <span class="board__clock" id="estimate-count"></span>
+              </div>
+              <div class="board__scroll">
+                <table id="estimate-table">
+                  <caption class="sr-only" id="estimate-caption">Prix prédits pour vos derniers vols simulés</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col" data-col="dep">Heure</th>
+                      <th scope="col" data-col="code">Vol</th>
+                      <th scope="col" data-col="from">De</th>
+                      <th scope="col" data-col="via">Via</th>
+                      <th scope="col" data-col="to">À</th>
+                      <th scope="col" data-col="date">Date</th>
+                      <th scope="col" data-col="pred" class="is-num">Prédit ₹</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <p class="estimate__band" id="sim-band"></p>
+            </figure>
+
+            <figure class="chart">
+              <h3 class="fig__title">Le même vol, du 1<sup>er</sup> mars au 30 juin 2019</h3>
+              <div id="sim-curve"></div>
+              <p class="source" id="sim-curve-note"></p>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Limites -->
+    <section class="chapter" id="limites">
+      <div class="wrap">
+        <div class="chapter__intro">
+          <h2 class="title">Le modèle ignore la date d'achat et ne connaît que cinq liaisons</h2>
+        </div>
+        <div class="closing">
+          <div>
+            <h3>Limites</h3>
+            <ul>
+              <li><strong>Une période courte.</strong> Les vols vont de mars à juin 2019 et couvrent cinq liaisons. Le modèle ne dit rien d'autres lignes ni d'autres années ; Jet Airways a d'ailleurs suspendu ses vols le 17 avril 2019.</li>
+              <li><strong>Pas de date d'achat.</strong> Le délai de réservation n'est connu qu'à travers la date du vol. Les prix semblent relevés début mars, ce qui rend les vols de début mars chers.</li>
+              <li><strong>Un bruit irréductible.</strong> <span data-k="meta.conflicts"></span> combinaisons de variables strictement identiques ont plusieurs prix. Ces écarts dépendent d'informations absentes des données.</li>
+              <li><strong>La classe affaires est exclue.</strong> <span data-k="meta.business.n"></span> billets, de <span data-k="meta.business.min" data-unit="₹"></span> à <span data-k="meta.business.max" data-unit="₹"></span>, trop rares pour être appris.</li>
+              <li><strong>Une fourchette globale.</strong> La fourchette à 80 % du simulateur est la même pour tous les vols. Une régression par quantiles en donnerait une propre à chaque vol.</li>
+              <li><strong>Des euros indicatifs.</strong> Taux de référence moyen de la BCE en 2019 : 1 € = <span data-k="meta.inrPerEur"></span> ₹.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Ce qui a changé depuis la première version</h3>
+            <ul>
+              <li>La régression linéaire était réentraînée sur le jeu de test avant d'y être évaluée.</li>
+              <li>La sélection de variables était apprise sur toutes les données, test compris.</li>
+              <li>Les réglages des modèles étaient choisis d'après leur score sur le test.</li>
+              <li>Les <span data-k="meta.duplicates"></span> doublons exacts sont retirés ; les billets à plus de 300 € ne le sont plus.</li>
+              <li>Le « pourcentage de bonne prédiction » laisse la place à des mesures standard : MAE, RMSE, MAPE et R².</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__grid">
+      <div>
+        <h2>Sources</h2>
+        <ul>
+          <li>Vols : concours MachineHack « Predict The Flight Ticket Price » (2019), copie publique sur <a href="https://www.kaggle.com/datasets/nikhilmittal/flight-fare-prediction-mh">Kaggle</a>.</li>
+          <li>Carte : contour de l'Inde par la communauté <a href="https://github.com/datameet/maps">DataMeet</a> (CC BY 4.0).</li>
+          <li>Taux de change : BCE, moyenne 2019.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Méthode</h2>
+        <ul>
+          <li><a href="https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/blob/main/notebooks/prediction_prix_billets.ipynb">Notebook commenté ↗</a></li>
+          <li>scikit-learn : gradient boosting appris sur le logarithme du prix, validation croisée à 5 plis.</li>
+          <li>Un test vérifie que le simulateur reproduit les prédictions Python à moins de 0,01 ₹ près.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Projet</h2>
+        <ul>
+          <li>Projet IAS, licence 3, 2022-2023.</li>
+          <li>Youssef Mir.</li>
+          <li><a href="https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-">Code source sur GitHub ↗</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="frame.js"></script>
+  <script src="model.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
