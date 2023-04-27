@@ -488,7 +488,7 @@
     },
     {
       key: 'period',
-      title: 'Réserver au dernier moment coûte cher',
+      title: 'Les vols de début mars coûtent le plus cher',
       text: `Les vols du 1er au 9 mars coûtent ${rupees(G.period[0].median)} en médiane, ${fmt.num(G.period[0].median / G.period[2].median, 1)} fois plus que ceux d'avril (${rupees(G.period[2].median)}). Les prix ont sans doute été relevés début mars, quand ces billets se vendaient à quelques jours du départ.`,
       emphasis: [0, 2],
     },
