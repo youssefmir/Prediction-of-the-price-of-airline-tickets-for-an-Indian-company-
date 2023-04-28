@@ -13,3 +13,4 @@ dist/
 
 # Téléchargements et résultats intermédiaires (régénérables)
 data/cache/
+.vercel/
