@@ -2,9 +2,9 @@
 
 Un modèle de gradient boosting prédit le prix d'un vol intérieur indien en se trompant en moyenne de 615 ₹ (environ 7,80 €, soit 6,9 % du prix) sur des vols qu'il n'a jamais vus.
 
-[![Tableau des départs du site : huit vols du jeu de test, avec leur prix réel et, en jaune, le prix prédit par le modèle](assets/cover.png)](https://youssefmir.github.io/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/)
+[![Tableau des départs du site : huit vols du jeu de test, avec leur prix réel et, en jaune, le prix prédit par le modèle](assets/cover.png)](https://prediction-billets-avion.vercel.app/)
 
-**[Voir le site interactif](https://youssefmir.github.io/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/)** · [Lire le notebook](https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/blob/main/notebooks/prediction_prix_billets.ipynb) · [Données](#données)
+**[Voir le site interactif](https://prediction-billets-avion.vercel.app/)** · [Lire le notebook](https://github.com/youssefmir/Prediction-of-the-price-of-airline-tickets-for-an-Indian-company-/blob/main/notebooks/prediction_prix_billets.ipynb) · [Données](#données)
 
 ## En bref
 
@@ -37,6 +37,12 @@ jupyter notebook notebooks/prediction_prix_billets.ipynb
 ```
 
 Le notebook s'exécute en deux minutes environ. Les données sont incluses dans le dépôt : aucune clé ni aucun téléchargement n'est nécessaire.
+
+## Déploiement
+
+Le site est hébergé sur [Vercel](https://prediction-billets-avion.vercel.app/). Chaque push sur
+`main` déclenche sa publication automatique. La configuration `vercel.json` sert directement
+le dossier `docs/`, sans compilation ni installation Python.
 
 ## Utilisation
 
@@ -126,7 +132,7 @@ Le dictionnaire des colonnes et le détail du nettoyage sont dans [data/README.m
 │   ├── export.py, parity.py         export du modèle vers le navigateur et vérification
 │   └── experiment.py, site_data.py, geo.py    données du site
 ├── scripts/                         génération des données du site et du contour
-├── docs/                            site interactif, publié par GitHub Pages
+├── docs/                            site interactif, publié sur Vercel
 ├── assets/                          couverture et figures de ce README
 ├── tests/                           tests pytest
 └── pyproject.toml, requirements.txt, requirements-dev.txt
